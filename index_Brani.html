@@ -19,6 +19,12 @@
             outline: 5px solid black;
             outline-offset: -5px;
         }
+        #player1 {
+            stroke: black;
+            stroke-width: 3;
+            fill: red;
+        }
+
         #middleline{
             fill:red;
             outline: none
@@ -27,6 +33,7 @@
             background-color:aquamarine;
         }
     </style>
+    <script src="logic.js"></script>
 </head>
 <body>
     <svg id="table" width="1290" height="600">
@@ -34,7 +41,7 @@
         <rect id="goal1" width="50" height="150" y="225"></rect>
         <rect id="goal2" width="50" height="150" x="1240" y="225"></rect>
         <rect id="middleline" width="10" height="590" x="645" y="5"></rect>
+        <circle id="player1" cx="50" cy="50" r="40"/>
     </svg>
 </body>
-<script src="logic.js"></script>
 </html>
