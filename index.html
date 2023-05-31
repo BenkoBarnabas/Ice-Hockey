@@ -5,13 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>chess bitch</title>
+    <style>
+        svg {
+            border: solid 2px black;
+            background-color: white;
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+        body{
+            background-color:aquamarine;
+        }
+    </style>
 </head>
 <body>
-    <svg height="600" width="600">
-        <circle cx="50" cy="50" r="15" stroke="black" stroke-width="3" fill="red" />
-        <circle cx="100" cy="50" r="15" stroke="black" stroke-width="3" fill="red" />
-    </svg>
-
-    <script src="logic.js"></script>
+    <svg id="my-svg" width="1200" height="600" viewBox="0 0 1200 600"></svg>
 </body>
 </html>
