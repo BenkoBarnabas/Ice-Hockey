@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chess bitch</title>
+    <style>
+        svg{
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+        rect{
+            fill:white;
+            outline: 5px solid black;
+            outline-offset: -5px;
+        }
+        #middleline{
+            fill:red;
+            outline: none
+        }
+        body{
+            background-color:aquamarine;
+        }
+    </style>
+</head>
+<body>
+    <svg id="table" width="1290" height="600">
+        <rect id="board" width="1200" height="600" x="45"></rect>
+        <rect id="goal1" width="50" height="150" y="225"></rect>
+        <rect id="goal2" width="50" height="150" x="1240" y="225"></rect>
+        <rect id="middleline" width="10" height="590" x="645" y="5"></rect>
+    </svg>
+</body>
+</html>
