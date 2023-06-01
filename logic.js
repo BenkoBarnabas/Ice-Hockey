@@ -50,7 +50,9 @@ let player1Inputs = {
     f: false
 }
 
-let boostValue = 20
+let boostValue = 2
+let lastDashed = Date.now()
+let dashCooldown = 5000
 
 
 //MAIN
@@ -72,6 +74,7 @@ function update() {
         player1Vector.yv *= 0.96
     }
     Player1Movements()
+    console.log(lastDashed < (Date.now() - dashCooldown));
 
     //end
     requestAnimationFrame(update)
@@ -79,28 +82,29 @@ function update() {
 
 
 function Player1InputHandler() {
-    if(player1Inputs.w == true)
+    if(player1Inputs.w)
     {
         player1Vector.yv -= 0.7
     }
-    if(player1Inputs.s == true)
+    if(player1Inputs.s)
     {
         player1Vector.yv += 0.7
     }
-    if(player1Inputs.d == true)
+    if(player1Inputs.d)
     {
         player1Vector.xv += 0.7
     }
-    if(player1Inputs.a == true)
+    if(player1Inputs.a)
     {
         player1Vector.xv -= 0.7
     }
-    if(player1Inputs.f == true)
+    if(player1Inputs.f && lastDashed < (Date.now() - dashCooldown))
     {
         player1Inputs.f = false
-        player1Vector.xv =  (player1Vector.xv / player1Vector.xv + player1Vector.yv) + boostValue
-        player1Vector.yv =  (player1Vector.yv / player1Vector.xv + player1Vector.yv) + boostValue
+        player1Vector.xv *= boostValue
+        player1Vector.yv *= boostValue
         console.log("dash")
+        lastDashed = Date.now()
     }
 }
 
@@ -108,3 +112,5 @@ function Player1Movements() {
     player1.setAttribute("cx", (Number(player1.getAttribute("cx")) + player1Vector.xv))
     player1.setAttribute("cy", (Number(player1.getAttribute("cy")) + player1Vector.yv))
 }
+
+update()
