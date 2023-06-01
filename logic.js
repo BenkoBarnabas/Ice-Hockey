@@ -54,59 +54,63 @@ let boostValue = 2
 let lastDashed = Date.now()
 let dashCooldown = 5000
 
-/**
- * @todo make modifiable by user
- */
-const player1Controls = {
-    forward: "w",
-    backward: "s",
-    left: "a",
-    right: "d"
-}
-/**
- * @todo make modifiable by user
- */
-const player2Controls = {
-    forward: "w",
-    backward: "s",
-    left: "a",
-    right: "d"
-}
 
-/**
- * The class used to build Player objects
- */
-class Player {
-    /**
-     * 
-     * @param {float} x the X coordinate of the start position
-     * @param {float} y the Y coordinate of the start position
-     * @param {object} controls an object with four properties representing the controlling keys: forward, backward, left, right
-     */
-    constructor(x, y, controls) {
-        this.x = x;
-        this.y = y;
-        this.forward = controls.forward;
-        this.backward = controls.backward;
-        this.left = controls.left;
-        this.right = controls.right;
+//MAIN
+function update() {
+    //logic
+    Player1InputHandler()
+    if(Math.abs(player1Vector.xv) < 0.01)
+    {
+        player1Vector.xv = 0
     }
+    else {
+        player1Vector.xv *= 0.96
+    }
+    if(Math.abs(player1Vector.yv) < 0.01)
+    {
+        player1Vector.yv = 0
+    }
+    else {
+        player1Vector.yv *= 0.96
+    }
+    Player1Movements()
+    console.log(lastDashed < (Date.now() - dashCooldown));
 
-    update() {
+    //end
+    requestAnimationFrame(update)
+}
 
+
+function Player1InputHandler() {
+    if(player1Inputs.w)
+    {
+        player1Vector.yv -= 0.7
+    }
+    if(player1Inputs.s)
+    {
+        player1Vector.yv += 0.7
+    }
+    if(player1Inputs.d)
+    {
+        player1Vector.xv += 0.7
+    }
+    if(player1Inputs.a)
+    {
+        player1Vector.xv -= 0.7
+    }
+    if(player1Inputs.f && lastDashed < (Date.now() - dashCooldown))
+    {
+        player1Inputs.f = false
+        player1Vector.xv *= boostValue
+        player1Vector.yv *= boostValue
+        console.log("dash")
+        lastDashed = Date.now()
     }
 }
 
-/**
- * gets executed every frame
- * 
- * `important:` frequency depends on the client's display's framerate
- */
-function renderFrame() {
-    /* 
-    update function goes here
-    */
-    requestAnimationFrame(renderFrame);
+function Player1Movements() {
+    player1.setAttribute("cx", (Number(player1.getAttribute("cx")) + player1Vector.xv))
+    player1.setAttribute("cy", (Number(player1.getAttribute("cy")) + player1Vector.yv))
 }
-//function has to be called once to start the loop
-renderFrame();
+
+update()
