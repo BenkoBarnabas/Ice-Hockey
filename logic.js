@@ -108,5 +108,3 @@ function Player1Movements() {
     player1.setAttribute("cx", (Number(player1.getAttribute("cx")) + player1Vector.xv))
     player1.setAttribute("cy", (Number(player1.getAttribute("cy")) + player1Vector.yv))
 }
-
-update()
