@@ -38,10 +38,16 @@ document.onkeyup = function(key){  //key = object with lots of info key.key is t
 
 //PARAMS
 let player1 = document.getElementById("player1")
+let board = document.getElementById("board")
+
 let player1Vector = { // v = velocity 
     xv: 0,
-    yv: 0 
+    yv: 0,
+    x: 0,
+    y: 0,
+    r: Number(player1.getAttribute("r"))
 }
+
 let player1Inputs = {
     w: false,
     a: false,
@@ -54,6 +60,13 @@ let boostValue = 2
 let lastDashed = Date.now()
 let dashCooldown = 5000
 
+const boardParameters = {
+    x: Number(board.getAttribute("x")),
+    y: Number(board.getAttribute("y")),
+    height: Number(board.getAttribute("height")),
+    width: Number(board.getAttribute("width"))
+}
+
 
 //MAIN
 function update() {
@@ -64,17 +77,17 @@ function update() {
         player1Vector.xv = 0
     }
     else {
-        player1Vector.xv *= 0.96
+        player1Vector.xv *= 0.98
     }
     if(Math.abs(player1Vector.yv) < 0.01)
     {
         player1Vector.yv = 0
     }
     else {
-        player1Vector.yv *= 0.96
+        player1Vector.yv *= 0.98
     }
-    Player1Movements()
-    console.log(lastDashed < (Date.now() - dashCooldown));
+    PlayerHandleCollisions()
+    PlayerHandleMovements()
 
     //end
     requestAnimationFrame(update)
@@ -108,9 +121,22 @@ function Player1InputHandler() {
     }
 }
 
-function Player1Movements() {
+function PlayerHandleMovements() {
     player1.setAttribute("cx", (Number(player1.getAttribute("cx")) + player1Vector.xv))
     player1.setAttribute("cy", (Number(player1.getAttribute("cy")) + player1Vector.yv))
+    player1Vector.x = Number(player1.getAttribute("cx"))
+    player1Vector.y = Number(player1.getAttribute("cy"))
 }
 
+function PlayerHandleCollisions() {
+    if ((player1Vector.x - player1Vector.r) <= boardParameters.x ||(boardParameters.x + boardParameters.width) <= (player1Vector.x + player1Vector.r) ) {
+        player1Vector.xv *= -1
+        console.log("if be vagyok én most");
+    }
+    if ((player1Vector.y - player1Vector.r) <= boardParameters.y ||(boardParameters.y + boardParameters.height) <= (player1Vector.y + player1Vector.r) ) {
+        player1Vector.yv *= -1
+        console.log("if be vagyok én most");
+    }
+}
 update()
+console.log(boardParameters);
