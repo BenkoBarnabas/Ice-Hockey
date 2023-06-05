@@ -39,6 +39,7 @@ document.onkeyup = function(key){  //key = object with lots of info key.key is t
 //PARAMS
 let player1 = document.getElementById("player1")
 let board = document.getElementById("board")
+let arrow = document.getElementById("arrow")
 
 let player1Vector = { // v = velocity 
     xv: 0,
@@ -88,6 +89,7 @@ function update() {
     }
     PlayerHandleCollisions()
     PlayerHandleMovements()
+    DirectionArrowHandler()
 
     //end
     requestAnimationFrame(update)
@@ -138,5 +140,16 @@ function PlayerHandleCollisions() {
         console.log("if be vagyok én most");
     }
 }
+
+function DirectionArrowHandler() {
+    arrow.setAttribute("x1",Number(player1.getAttribute("cx")))
+    arrow.setAttribute("y1",Number(player1.getAttribute("cy")))
+
+    arrow.setAttribute("x2",((Number(arrow.getAttribute("x1")+30))))
+    arrow.setAttribute("y2",((Number(arrow.getAttribute("y1")-30))))
+}
+
+//MAIN
 update()
+DirectionArrowHandler()
 console.log(boardParameters);
