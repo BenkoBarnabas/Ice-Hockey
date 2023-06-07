@@ -88,8 +88,9 @@ function update() {
         player1Vector.yv *= 0.98
     }
     PlayerHandleCollisions()
-    PlayerHandleMovements()
     DirectionArrowHandler()
+    PlayerHandleMovements()
+    
 
     //end
     requestAnimationFrame(update)
@@ -97,21 +98,21 @@ function update() {
 
 
 function Player1InputHandler() {
-    if(player1Inputs.w)
+    if(player1Inputs.w && !((player1Vector.y - player1Vector.r) <= boardParameters.y))
     {
         player1Vector.yv -= 0.7
     }
-    if(player1Inputs.s)
+    if(player1Inputs.s && !((boardParameters.y + boardParameters.height) <= (player1Vector.y + player1Vector.r)))
     {
         player1Vector.yv += 0.7
     }
-    if(player1Inputs.d)
-    {
-        player1Vector.xv += 0.7
-    }
-    if(player1Inputs.a)
+    if(player1Inputs.a && !((player1Vector.x - player1Vector.r) <= boardParameters.x))
     {
         player1Vector.xv -= 0.7
+    }
+    if(player1Inputs.d && !((boardParameters.x + boardParameters.width) <= (player1Vector.x + player1Vector.r)))
+    {
+        player1Vector.xv += 0.7
     }
     if(player1Inputs.f && lastDashed < (Date.now() - dashCooldown))
     {
@@ -124,16 +125,17 @@ function Player1InputHandler() {
 }
 
 function PlayerHandleMovements() {
-    player1.setAttribute("cx", (Number(player1.getAttribute("cx")) + player1Vector.xv))
-    player1.setAttribute("cy", (Number(player1.getAttribute("cy")) + player1Vector.yv))
-    player1Vector.x = Number(player1.getAttribute("cx"))
-    player1Vector.y = Number(player1.getAttribute("cy"))
+        player1.setAttribute("cx", (Number(player1.getAttribute("cx")) + player1Vector.xv))
+        player1.setAttribute("cy", (Number(player1.getAttribute("cy")) + player1Vector.yv))
+        player1Vector.x = Number(player1.getAttribute("cx"))
+        player1Vector.y = Number(player1.getAttribute("cy"))
+    
 }
 
 function PlayerHandleCollisions() {
     if ((player1Vector.x - player1Vector.r) <= boardParameters.x ||(boardParameters.x + boardParameters.width) <= (player1Vector.x + player1Vector.r) ) {
         player1Vector.xv *= -1
-        console.log("if be vagyok én most");
+        console.log("if be vagyok én most")
     }
     if ((player1Vector.y - player1Vector.r) <= boardParameters.y ||(boardParameters.y + boardParameters.height) <= (player1Vector.y + player1Vector.r) ) {
         player1Vector.yv *= -1
@@ -152,4 +154,5 @@ function DirectionArrowHandler() {
 //MAIN
 update()
 DirectionArrowHandler()
+PlayerHandleMovements()
 console.log(boardParameters);
