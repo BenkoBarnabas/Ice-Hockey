@@ -1,5 +1,5 @@
 //INPUTS
-
+//PLAYER1
 document.onkeydown = function(key){  //key = object with lots of info key.key is the key pressed
     switch(String(key.key)) {
         case "w":
@@ -36,10 +36,48 @@ document.onkeyup = function(key){  //key = object with lots of info key.key is t
     }
 }
 
+//PLAYER2
+document.onkeydown = function(key){  //key = object with lots of info key.key is the key pressed
+    switch(String(key.key)) {
+        case "38":
+            player2Inputs.w = true
+            break;
+        case "37":
+            player2Inputs.a = true
+            break;
+        case "40":
+            player2Inputs.s = true
+            break;
+        case "39":
+            player2Inputs.d = true
+            break;
+        case "ctrlKey":
+            player2Inputs.f = true
+            break;
+    }
+}
+document.onkeyup = function(key){  //key = object with lots of info key.key is the key pressed
+    switch(String(key.key)) {
+        case "38":
+            player2Inputs.w = false
+            break;
+        case "37":
+            player2Inputs.a = false
+            break;
+        case "40":
+            player2Inputs.s = false
+            break;
+        case "39":
+            player2Inputs.d = false
+            break;
+    }
+}
 //PARAMS
 let player1 = document.getElementById("player1")
+let player2 = document.getElementById("player2")
 let board = document.getElementById("board")
-let arrow = document.getElementById("arrow")
+let arrow1 = document.getElementById("arrow1")
+let arrow2 = document.getElementById("arrow2")
 
 //sliderObjecs
 let slidinessSlider = document.getElementById("slidiness")
@@ -62,16 +100,33 @@ let player1Inputs = {
     f: false
 }
 
-let lastDashed = Date.now()
+let player2Vector = { // v = velocity 
+    xv: 0,
+    yv: 0,
+    x: 0,
+    y: 0,
+    r: Number(player2.getAttribute("r"))
+}
+
+let player2Inputs = {
+    w: false,
+    a: false,
+    s: false,
+    d: false,
+    f: false
+}
 
 let boostValue = 2
-let dashCooldown = 500
-let wallBounciness = 0.5
+
+let lastDashedPlayer1 = Date.now()
+let dashCooldownPlayer1 = 5000
+
+let lastDashedPlayer2 = Date.now()
+let dashCooldownPlayer2 = 5000
+
+let wallBounciness = 30
 let slidiness = 0.98
 let acceleration = 0.7
-
-let adjustables = [wallBounciness,slidiness,acceleration]
-console.log(adjustables);
 
 const boardParameters = {
     x: Number(board.getAttribute("x")),
@@ -84,7 +139,8 @@ const boardParameters = {
 //MAIN
 function update() {
     //logic
-    Player1InputHandler()
+    PlayerInputHandler()
+
     if(Math.abs(player1Vector.xv) < 0.01)
     {
         player1Vector.xv = 0
@@ -99,40 +155,82 @@ function update() {
     else {
         player1Vector.yv *= slidiness
     }
+
+
+
+    if(Math.abs(player2Vector.xv) < 0.01)
+    {
+        player2Vector.xv = 0
+    }
+    else {
+        player2Vector.xv *= slidiness
+    }
+    if(Math.abs(player2Vector.yv) < 0.01)
+    {
+        player2Vector.yv = 0
+    }
+    else {
+        player2Vector.yv *= slidiness
+    }
+
     PlayerHandleCollisions()
     PlayerHandleMovements()
     DirectionArrowHandler()
-    
 
     //end
     requestAnimationFrame(update)
 }
 
 
-function Player1InputHandler() {
-    if(player1Inputs.w)
+function PlayerInputHandler() {
+    if(player1Inputs.w && !((player1Vector.y - player1Vector.r) <= boardParameters.y))
     {
         player1Vector.yv -= acceleration
     }
-    if(player1Inputs.s)
+    if(player1Inputs.s && !((boardParameters.y + boardParameters.height) <= (player1Vector.y + player1Vector.r)))
     {
         player1Vector.yv += acceleration
     }
-    if(player1Inputs.a)
+    if(player1Inputs.a && !((player1Vector.x - player1Vector.r) <= boardParameters.x))
     {
         player1Vector.xv -= acceleration
     }
-    if(player1Inputs.d)
+    if(player1Inputs.d && !((boardParameters.x + boardParameters.width) <= (player1Vector.x + player1Vector.r)))
     {
         player1Vector.xv += acceleration
     }
-    if(player1Inputs.f && lastDashed < (Date.now() - dashCooldown))
+    if(player1Inputs.f && lastDashedPlayer1 < (Date.now() - dashCooldownPlayer1))
     {
         player1Inputs.f = false
         player1Vector.xv *= boostValue
         player1Vector.yv *= boostValue
         console.log("dash")
-        lastDashed = Date.now()
+        lastDashedPlayer1 = Date.now()
+    }
+
+    if(player2Inputs.w && !((player2Vector.y - player2Vector.r) <= boardParameters.y))
+    {
+        player2Vector.yv -= 0.7
+    }
+    if(player2Inputs.s && !((boardParameters.y + boardParameters.height) <= (player2Vector.y + player2Vector.r)))
+    {
+        player2Vector.yv += 0.7
+    }
+    if(player2Inputs.a && !((player2Vector.x - player2Vector.r) <= boardParameters.x))
+    {
+        player2Vector.xv -= 0.7
+    }
+    if(player2Inputs.d && !((boardParameters.x + boardParameters.width) <= (player2Vector.x + player2Vector.r)))
+    {
+        player2Vector.xv += 0.7
+    }
+    if(player2Inputs.f && lastDashedPlayer2 < (Date.now() - dashCooldownPlayer2))
+    {
+        player2Inputs.f = false
+        player2Vector.xv *= boostValue
+        player2Vector.yv *= boostValue
+        console.log("dash")
+        lastDashedPlayer2 = Date.now()
     }
 }
 
@@ -141,7 +239,11 @@ function PlayerHandleMovements() {
         player1.setAttribute("cy", (Number(player1.getAttribute("cy")) + player1Vector.yv))
         player1Vector.x = Number(player1.getAttribute("cx"))
         player1Vector.y = Number(player1.getAttribute("cy"))
-    
+
+        player2.setAttribute("cx", (Number(player2.getAttribute("cx")) + player2Vector.xv))
+        player2.setAttribute("cy", (Number(player2.getAttribute("cy")) + player2Vector.yv))
+        player2Vector.x = Number(player2.getAttribute("cx"))
+        player2Vector.y = Number(player2.getAttribute("cy"))
 }
 
 function PlayerHandleCollisions() {
@@ -155,28 +257,42 @@ function PlayerHandleCollisions() {
         player1Vector.yv += Math.sign(player1Vector.yv)*wallBounciness
         console.log("if be vagyok én most");
     }
+
+    if ((player2Vector.x - player2Vector.r) <= boardParameters.x ||(boardParameters.x + boardParameters.width) <= (player2Vector.x + player2Vector.r) ) {
+        player2Vector.xv *= -1
+        player2Vector.xv += Math.sign(player2Vector.xv)*wallBounciness
+        console.log("if be vagyok én most")
+    }
+    if ((player2Vector.y - player2Vector.r) <= boardParameters.y ||(boardParameters.y + boardParameters.height) <= (player2Vector.y + player2Vector.r) ) {
+        player2Vector.yv *= -1
+        player2Vector.yv += Math.sign(player2Vector.yv)*wallBounciness
+        console.log("if be vagyok én most");
+    }
 }
 
 function DirectionArrowHandler() {
-    arrow.setAttribute("x1",Number(player1.getAttribute("cx")))
-    arrow.setAttribute("y1",Number(player1.getAttribute("cy")))
+    arrow1.setAttribute("x1",Number(player1.getAttribute("cx")))
+    arrow1.setAttribute("y1",Number(player1.getAttribute("cy")))
 
-    arrow.setAttribute("x2",((Number(arrow.getAttribute("x1"))+Math.sign(player1Vector.xv)*12*(Math.sqrt(Math.abs(player1Vector.xv))))))
-    arrow.setAttribute("y2",((Number(arrow.getAttribute("y1"))+Math.sign(player1Vector.yv)*12*(Math.sqrt(Math.abs(player1Vector.yv))))))
+    arrow1.setAttribute("x2",((Number(arrow1.getAttribute("x1"))+Math.sign(player1Vector.xv)*12*(Math.sqrt(Math.abs(player1Vector.xv))))))
+    arrow1.setAttribute("y2",((Number(arrow1.getAttribute("y1"))+Math.sign(player1Vector.yv)*12*(Math.sqrt(Math.abs(player1Vector.yv))))))
+
+    arrow2.setAttribute("x1",Number(player2.getAttribute("cx")))
+    arrow2.setAttribute("y1",Number(player2.getAttribute("cy")))
+
+    arrow2.setAttribute("x2",((Number(arrow2.getAttribute("x1"))+Math.sign(player2Vector.xv)*12*(Math.sqrt(Math.abs(player2Vector.xv))))))
+    arrow2.setAttribute("y2",((Number(arrow2.getAttribute("y1"))+Math.sign(player2Vector.yv)*12*(Math.sqrt(Math.abs(player2Vector.yv))))))
 }
-
 
 //SLIDERS
 
-document.addEventListener("input", function(event) {
-    // Check if the event target is the slider
-    if (event.target === slidinessSlider) {
-      var value = slidinessSlider.value; // Get the current value of the slider
-      slidinessValue.innerHTML = value // Output the value to the console (you can perform any other actions with the value here)
-    }
-  })
+slidinessSlider.addEventListener("input", function() {
+    var value = slidinessSlider.value; // Get the current value of the slider
+    console.log(value);
+})
 
-  //MAIN
+//MAIN
 update()
 DirectionArrowHandler()
+PlayerHandleMovements()
 console.log(boardParameters);
