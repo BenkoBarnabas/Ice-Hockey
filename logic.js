@@ -17,6 +17,21 @@ document.onkeydown = function(key){  //key = object with lots of info key.key is
         case "f":
             player1Inputs.f = true
             break;
+        case "i":
+            player2Inputs.w = true
+            break;
+        case "j":
+            player2Inputs.a = true
+            break;
+        case "k":
+            player2Inputs.s = true
+            break;
+        case "l":
+            player2Inputs.d = true
+            break;
+        case "h":
+            player2Inputs.f = true
+            break;
     }
 }
 document.onkeyup = function(key){  //key = object with lots of info key.key is the key pressed
@@ -33,45 +48,22 @@ document.onkeyup = function(key){  //key = object with lots of info key.key is t
         case "d":
             player1Inputs.d = false
             break;
-    }
-}
-
-//PLAYER2
-document.onkeydown = function(key){  //key = object with lots of info key.key is the key pressed
-    switch(String(key.key)) {
-        case "38":
-            player2Inputs.w = true
-            break;
-        case "37":
-            player2Inputs.a = true
-            break;
-        case "40":
-            player2Inputs.s = true
-            break;
-        case "39":
-            player2Inputs.d = true
-            break;
-        case "ctrlKey":
-            player2Inputs.f = true
-            break;
-    }
-}
-document.onkeyup = function(key){  //key = object with lots of info key.key is the key pressed
-    switch(String(key.key)) {
-        case "38":
+        case "i":
             player2Inputs.w = false
             break;
-        case "37":
+        case "j":
             player2Inputs.a = false
             break;
-        case "40":
+        case "k":
             player2Inputs.s = false
             break;
-        case "39":
+        case "l":
             player2Inputs.d = false
             break;
     }
 }
+
+
 //PARAMS
 let player1 = document.getElementById("player1")
 let player2 = document.getElementById("player2")
@@ -119,14 +111,16 @@ let player2Inputs = {
 let boostValue = 2
 
 let lastDashedPlayer1 = Date.now()
-let dashCooldownPlayer1 = 5000
 
 let lastDashedPlayer2 = Date.now()
-let dashCooldownPlayer2 = 5000
 
-let wallBounciness = 30
+let wallBounciness = 0.5
 let slidiness = 0.98
 let acceleration = 0.7
+let dashCooldown = 500
+
+let adjustables = [wallBounciness,slidiness,acceleration]
+console.log(adjustables);
 
 const boardParameters = {
     x: Number(board.getAttribute("x")),
@@ -199,7 +193,7 @@ function PlayerInputHandler() {
     {
         player1Vector.xv += acceleration
     }
-    if(player1Inputs.f && lastDashedPlayer1 < (Date.now() - dashCooldownPlayer1))
+    if(player1Inputs.f && lastDashedPlayer1 < (Date.now() - dashCooldown))
     {
         player1Inputs.f = false
         player1Vector.xv *= boostValue
@@ -224,7 +218,7 @@ function PlayerInputHandler() {
     {
         player2Vector.xv += 0.7
     }
-    if(player2Inputs.f && lastDashedPlayer2 < (Date.now() - dashCooldownPlayer2))
+    if(player2Inputs.f && lastDashedPlayer2 < (Date.now() - dashCooldown))
     {
         player2Inputs.f = false
         player2Vector.xv *= boostValue
@@ -286,10 +280,13 @@ function DirectionArrowHandler() {
 
 //SLIDERS
 
-slidinessSlider.addEventListener("input", function() {
-    var value = slidinessSlider.value; // Get the current value of the slider
-    console.log(value);
-})
+document.addEventListener("input", function(event) {
+    // Check if the event target is the slider
+    if (event.target === slidinessSlider) {
+      var value = slidinessSlider.value; // Get the current value of the slider
+      slidinessValue.innerHTML = value // Output the value to the console (you can perform any other actions with the value here)
+    }
+  })
 
 //MAIN
 update()
