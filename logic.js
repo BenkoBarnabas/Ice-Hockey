@@ -147,8 +147,17 @@ function DirectionArrowHandler() {
     arrow.setAttribute("x1",Number(player1.getAttribute("cx")))
     arrow.setAttribute("y1",Number(player1.getAttribute("cy")))
 
-    arrow.setAttribute("x2",((Number(arrow.getAttribute("x1")+30))))
-    arrow.setAttribute("y2",((Number(arrow.getAttribute("y1")-30))))
+    arrow.setAttribute("x2",((Number(arrow.getAttribute("x1"))+Math.sign(player1Vector.xv)*12*(Math.sqrt(Math.abs(player1Vector.xv))))))
+    arrow.setAttribute("y2",((Number(arrow.getAttribute("y1"))+Math.sign(player1Vector.yv)*12*(Math.sqrt(Math.abs(player1Vector.yv))))))
+
+    console.log("x1")
+    console.log(arrow.getAttribute("x1"));
+    console.log("x2")
+    console.log(arrow.getAttribute("x2"));
+    console.log("y1")
+    console.log(arrow.getAttribute("y1"));
+    console.log("y2")
+    console.log(arrow.getAttribute("y2"));
 }
 
 //MAIN
