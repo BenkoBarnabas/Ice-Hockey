@@ -73,8 +73,18 @@ let arrow2 = document.getElementById("arrow2")
 
 //sliderObjecs
 let slidinessSlider = document.getElementById("slidiness")
+let wallBouncinessSlider = document.getElementById("wallBounciness")
+let accelerationSlider = document.getElementById("acceleration")
+
+let adjustableSliders = [wallBouncinessSlider,slidinessSlider,accelerationSlider]
+
 //sliderTexts
 let slidinessValue = document.getElementById("slidinessValue")
+let wallBouncinessValue = document.getElementById("wallBouncinessValue")
+let accelerationValue = document.getElementById("accelerationValue")
+
+let adjustableValues = [wallBouncinessValue,slidinessValue,accelerationValue]
+
 
 let player1Vector = { // v = velocity 
     xv: 0,
@@ -280,13 +290,7 @@ function DirectionArrowHandler() {
 
 //SLIDERS
 
-document.addEventListener("input", function(event) {
-    // Check if the event target is the slider
-    if (event.target === slidinessSlider) {
-      var value = slidinessSlider.value; // Get the current value of the slider
-      slidinessValue.innerHTML = value // Output the value to the console (you can perform any other actions with the value here)
-    }
-  })
+
 
 //MAIN
 update()
