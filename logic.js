@@ -75,15 +75,19 @@ let arrow2 = document.getElementById("arrow2")
 let slidinessSlider = document.getElementById("slidiness")
 let wallBouncinessSlider = document.getElementById("wallBounciness")
 let accelerationSlider = document.getElementById("acceleration")
+let boostValueSlider = document.getElementById("boostValue")
+let coolDownSlider = document.getElementById("coolDown")
 
-let adjustableSliders = [wallBouncinessSlider,slidinessSlider,accelerationSlider]
+let adjustableSliders = [wallBouncinessSlider,slidinessSlider,accelerationSlider,boostValueSlider,coolDownSlider]
 
 //sliderTexts
 let slidinessValue = document.getElementById("slidinessValue")
 let wallBouncinessValue = document.getElementById("wallBouncinessValue")
 let accelerationValue = document.getElementById("accelerationValue")
+let boostValueValue = document.getElementById("boostValueValue")
+let coolDownValue = document.getElementById("coolDownValue")
 
-let adjustableValues = [wallBouncinessValue,slidinessValue,accelerationValue]
+let adjustableValues = [wallBouncinessValue,slidinessValue,accelerationValue,boostValueValue,coolDownValue]
 
 
 let player1Vector = { // v = velocity 
@@ -118,18 +122,18 @@ let player2Inputs = {
     f: false
 }
 
-let boostValue = 2
 
 let lastDashedPlayer1 = Date.now()
-
 let lastDashedPlayer2 = Date.now()
 
+//adjustables
+let boostValue = 2
 let wallBounciness = 0.5
 let slidiness = 0.98
 let acceleration = 0.7
-let dashCooldown = 500
+let dashCooldown = 500 //launch előtt legyen több
 
-let adjustables = [wallBounciness,slidiness,acceleration]
+let adjustables = [wallBounciness,slidiness,acceleration,boostValue,dashCooldown]
 console.log(adjustables);
 
 const boardParameters = {
@@ -144,6 +148,7 @@ const boardParameters = {
 function update() {
     //logic
     PlayerInputHandler()
+    UpdateAdjustables()
 
     if(Math.abs(player1Vector.xv) < 0.01)
     {
@@ -290,10 +295,53 @@ function DirectionArrowHandler() {
 
 //SLIDERS
 
+document.addEventListener("input", function(event) {
+    // Check if the event target is the slider
+    for (let i = 0; i < 5; i++)
+    {
+        if (event.target === adjustableSliders[i]) {
+            var value = adjustableSliders[i].value; //the indexes of adjustable/value/sliders are the same and we can use an array to make the code simpler
+            adjustableValues[i].innerHTML = value
+            adjustables[i] = value
+            console.log(wallBounciness);
+
+        }
+        
+    }
+  })
+
+function UpdateAdjustables() {
+    wallBounciness = adjustables[0]
+    slidiness = adjustables[1]
+    acceleration = adjustables[2]
+    boostValue = adjustables[3]
+    dashCooldown = adjustables[4]
+}
+
+function ResetAdjustables(){
+    let boostValue = 2
+    let wallBounciness = 0.5
+    let slidiness = 0.98
+    let acceleration = 0.7
+    let dashCooldown = 500 //launch előtt legyen több
+
+    adjustables[0] = wallBounciness
+    adjustables[1] = slidiness
+    adjustables[2] = acceleration
+    adjustables[3] = boostValue
+    adjustables[4] = dashCooldown
+
+    for(let i = 0; i<5; i++){
+        adjustableValues[i].innerHTML = adjustables[i]
+        adjustableSliders[i].value = adjustables[i]
+        console.log("kaki");
+    }
+}
 
 
 //MAIN
 update()
 DirectionArrowHandler()
 PlayerHandleMovements()
+
 console.log(boardParameters);
