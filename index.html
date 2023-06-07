@@ -13,7 +13,6 @@
             left: 50%;
             -ms-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
-            border: 2px solid black;
         }
         rect{
             fill:white;
@@ -30,6 +29,9 @@
     </style>
 </head>
 <body>
+    <input type="range" id="slidiness" min="0" max="1" value="0.98" step="0.01">
+    <p id="slidinessValue"></p>
+
     <svg id="table" width="1290" height="600">
         <rect id="board" width="1200" height="600" x="45"></rect>
         <rect id="goal1" width="50" height="150" y="225"></rect>
