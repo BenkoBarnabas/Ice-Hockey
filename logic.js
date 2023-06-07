@@ -66,9 +66,12 @@ let lastDashed = Date.now()
 
 let boostValue = 2
 let dashCooldown = 500
-let wallBounciness = 30
+let wallBounciness = 0.5
 let slidiness = 0.98
 let acceleration = 0.7
+
+let adjustables = [wallBounciness,slidiness,acceleration]
+console.log(adjustables);
 
 const boardParameters = {
     x: Number(board.getAttribute("x")),
@@ -165,11 +168,15 @@ function DirectionArrowHandler() {
 
 //SLIDERS
 
-slidinessSlider.addEventListener("input", function() {
-    var value = slidinessSlider.value; // Get the current value of the slider
-    console.log(value);
-})
-//MAIN
+document.addEventListener("input", function(event) {
+    // Check if the event target is the slider
+    if (event.target === slidinessSlider) {
+      var value = slidinessSlider.value; // Get the current value of the slider
+      slidinessValue.innerHTML = value // Output the value to the console (you can perform any other actions with the value here)
+    }
+  })
+
+  //MAIN
 update()
 DirectionArrowHandler()
 console.log(boardParameters);
