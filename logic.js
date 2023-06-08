@@ -130,7 +130,7 @@ let lastDashedPlayer2 = Date.now()
 let boostValue = 2
 let wallBounciness = 0.5
 let slidiness = 0.98
-let acceleration = 0.7
+let acceleration = 5
 let dashCooldown = 500 //launch előtt legyen több
 
 let adjustables = [wallBounciness,slidiness,acceleration,boostValue,dashCooldown]
@@ -185,7 +185,7 @@ function update() {
     PlayerHandleCollisions()
     PlayerHandleMovements()
     DirectionArrowHandler()
-
+    console.log(acceleration);
     //end
     requestAnimationFrame(update)
 }
@@ -219,19 +219,19 @@ function PlayerInputHandler() {
 
     if(player2Inputs.w && !((player2Vector.y - player2Vector.r) <= boardParameters.y))
     {
-        player2Vector.yv -= 0.7
+        player2Vector.yv -= acceleration
     }
     if(player2Inputs.s && !((boardParameters.y + boardParameters.height) <= (player2Vector.y + player2Vector.r)))
     {
-        player2Vector.yv += 0.7
+        player2Vector.yv += acceleration
     }
     if(player2Inputs.a && !((player2Vector.x - player2Vector.r) <= boardParameters.x))
     {
-        player2Vector.xv -= 0.7
+        player2Vector.xv -= acceleration
     }
     if(player2Inputs.d && !((boardParameters.x + boardParameters.width) <= (player2Vector.x + player2Vector.r)))
     {
-        player2Vector.xv += 0.7
+        player2Vector.xv += acceleration
     }
     if(player2Inputs.f && lastDashedPlayer2 < (Date.now() - dashCooldown))
     {
@@ -259,6 +259,9 @@ function PlayerHandleCollisions() {
     if ((player1Vector.x - player1Vector.r) <= boardParameters.x ||(boardParameters.x + boardParameters.width) <= (player1Vector.x + player1Vector.r) ) {
         player1Vector.xv *= -1
         player1Vector.xv += Math.sign(player1Vector.xv)*wallBounciness
+
+        player1Vector.x += boardParameters.x
+        
         console.log("if be vagyok én most")
     }
     if ((player1Vector.y - player1Vector.r) <= boardParameters.y ||(boardParameters.y + boardParameters.height) <= (player1Vector.y + player1Vector.r) ) {
