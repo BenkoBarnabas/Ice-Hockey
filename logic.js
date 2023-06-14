@@ -70,6 +70,9 @@ let player2 = document.getElementById("player2")
 let board = document.getElementById("board")
 let arrow1 = document.getElementById("arrow1")
 let arrow2 = document.getElementById("arrow2")
+let ball = document.getElementById("ball")
+
+let ballMass = 2
 
 //sliderObjecs
 let slidinessSlider = document.getElementById("slidiness")
@@ -122,6 +125,14 @@ let player2Inputs = {
     f: false
 }
 
+let ballVector = {
+    x: 0,
+    y: 0,
+    xv: 0,
+    yv: 0,
+    r: Number(ball.getAttribute("r"))
+}
+
 
 let lastDashedPlayer1 = Date.now()
 let lastDashedPlayer2 = Date.now()
@@ -149,43 +160,12 @@ function update() {
     //logic
     PlayerInputHandler()
     UpdateAdjustables()
-
-    if(Math.abs(player1Vector.xv) < 0.01)
-    {
-        player1Vector.xv = 0
-    }
-    else {
-        player1Vector.xv *= slidiness
-    }
-    if(Math.abs(player1Vector.yv) < 0.01)
-    {
-        player1Vector.yv = 0
-    }
-    else {
-        player1Vector.yv *= slidiness
-    }
-
-
-
-    if(Math.abs(player2Vector.xv) < 0.01)
-    {
-        player2Vector.xv = 0
-    }
-    else {
-        player2Vector.xv *= slidiness
-    }
-    if(Math.abs(player2Vector.yv) < 0.01)
-    {
-        player2Vector.yv = 0
-    }
-    else {
-        player2Vector.yv *= slidiness
-    }
-
+    Firction()
     PlayerHandleCollisions()
     PlayerHandleMovements()
     DirectionArrowHandler()
     PlayerHandleBorders()
+    BallCollisions()
     //end
     requestAnimationFrame(update)
 }
@@ -253,6 +233,61 @@ function PlayerHandleMovements() {
         player2.setAttribute("cy", (Number(player2.getAttribute("cy")) + player2Vector.yv))
         player2Vector.x = Number(player2.getAttribute("cx"))
         player2Vector.y = Number(player2.getAttribute("cy"))
+
+        ball.setAttribute("cx", (Number(ball.getAttribute("cx")) + ballVector.xv))
+        ball.setAttribute("cy", (Number(ball.getAttribute("cy")) + ballVector.yv))
+        ballVector.x = Number(ball.getAttribute("cx"))
+        ballVector.y = Number(ball.getAttribute("cy"))
+        
+}
+
+function Firction() {
+    if(Math.abs(player1Vector.xv) < 0.01)
+    {
+        player1Vector.xv = 0
+    }
+    else {
+        player1Vector.xv *= slidiness
+    }
+    if(Math.abs(player1Vector.yv) < 0.01)
+    {
+        player1Vector.yv = 0
+    }
+    else {
+        player1Vector.yv *= slidiness
+    }
+
+
+
+    if(Math.abs(player2Vector.xv) < 0.01)
+    {
+        player2Vector.xv = 0
+    }
+    else {
+        player2Vector.xv *= slidiness
+    }
+    if(Math.abs(player2Vector.yv) < 0.01)
+    {
+        player2Vector.yv = 0
+    }
+    else {
+        player2Vector.yv *= slidiness
+    }
+
+    if(Math.abs(ballVector.xv) < 0.01)
+    {
+        ballVector.xv = 0
+    }
+    else {
+        ballVector.xv *= slidiness
+    }
+    if(Math.abs(ballVector.yv) < 0.01)
+    {
+        ballVector.yv = 0
+    }
+    else {
+        ballVector.yv *= slidiness
+    }
 }
 
 function PlayerHandleCollisions() {
@@ -269,6 +304,7 @@ function PlayerHandleCollisions() {
         console.log("if be vagyok én most");
     }
 
+    //PLAYER2
     if ((player2Vector.x - player2Vector.r) <= boardParameters.x ||(boardParameters.x + boardParameters.width) <= (player2Vector.x + player2Vector.r) ) {
         player2Vector.xv *= -1
         player2Vector.xv += Math.sign(player2Vector.xv)*wallBounciness
@@ -278,6 +314,20 @@ function PlayerHandleCollisions() {
     if ((player2Vector.y - player2Vector.r) <= boardParameters.y ||(boardParameters.y + boardParameters.height) <= (player2Vector.y + player2Vector.r) ) {
         player2Vector.yv *= -1
         player2Vector.yv += Math.sign(player2Vector.yv)*wallBounciness
+
+        console.log("if be vagyok én most");
+    }
+
+    //BALL
+    if ((ballVector.x - ballVector.r) <= boardParameters.x ||(boardParameters.x + boardParameters.width) <= (ballVector.x + ballVector.r) ) {
+        ballVector.xv *= -1
+        ballVector.xv += Math.sign(ballVector.xv)*wallBounciness
+
+        console.log("if be vagyok én most")
+    }
+    if ((ballVector.y - ballVector.r) <= boardParameters.y ||(boardParameters.y + boardParameters.height) <= (ballVector.y + ballVector.r) ) {
+        ballVector.yv *= -1
+        ballVector.yv += Math.sign(ballVector.yv)*wallBounciness
 
         console.log("if be vagyok én most");
     }
@@ -306,11 +356,40 @@ function PlayerHandleBorders() {
         player2.setAttribute("cx", boardParameters.x-player2Vector.r+boardParameters.width) 
     }
     
-    if ((player1Vector.y - player2Vector.r) <= boardParameters.y){
+    if ((player2Vector.y - player2Vector.r) <= boardParameters.y){
         player2.setAttribute("cy", boardParameters.y+player2Vector.r)
     }
     else if ((boardParameters.y + boardParameters.height) <= (player2Vector.y + player2Vector.r)) {
         player2.setAttribute("cy", boardParameters.y + boardParameters.height-player2Vector.r)
+    }
+
+    if ((player2Vector.x - player2Vector.r) <= boardParameters.x){
+        player2.setAttribute("cx", boardParameters.x+player2Vector.r)
+    }
+    else if((boardParameters.x + boardParameters.width) <= (player2Vector.x + player2Vector.r)) {
+        player2.setAttribute("cx", boardParameters.x-player2Vector.r+boardParameters.width) 
+    }
+
+    //BALL
+    if ((ballVector.x - ballVector.r) <= boardParameters.x){
+        ball.setAttribute("cx", boardParameters.x+ballVector.r)
+    }
+    else if((boardParameters.x + boardParameters.width) <= (ballVector.x + ballVector.r)) {
+        ball.setAttribute("cx", boardParameters.x-ballVector.r+boardParameters.width) 
+    }
+    
+    if ((ballVector.y - ballVector.r) <= boardParameters.y){
+        ball.setAttribute("cy", boardParameters.y+ballVector.r)
+    }
+    else if ((boardParameters.y + boardParameters.height) <= (ballVector.y + ballVector.r)) {
+        ball.setAttribute("cy", boardParameters.y + boardParameters.height-ballVector.r)
+    }
+
+    if ((ballVector.x - ballVector.r) <= boardParameters.x){
+        ball.setAttribute("cx", boardParameters.x+ballVector.r)
+    }
+    else if((boardParameters.x + boardParameters.width) <= (ballVector.x + ballVector.r)) {
+        ball.setAttribute("cx", boardParameters.x-ballVector.r+boardParameters.width) 
     }
 }
 
@@ -336,6 +415,14 @@ function DirectionArrowHandler() {
     if((Math.abs(player2Vector.xv) || Math.abs(player2Vector.yv)) > 0)
     {
         document.getElementById("arrow2").style.display = "block"
+    }
+}
+
+function BallCollisions() {
+    if((ballVector.x-player1Vector.x)**2+(ballVector.y-player1Vector.y)**2 <= (player1Vector.r+ballVector.r)**2)
+    {
+        ballVector.xv += player1Vector.xv/ballMass
+        console.log("ball érintkezés");
     }
 }
 
