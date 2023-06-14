@@ -5,53 +5,46 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>chess bitch</title>
-    <style>
-        svg{
-            margin: 0;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            -ms-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-        }
-        body{
-            background-color:aquamarine;
-        }
-        line {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <p>1/friction:</p>
-    <input type="range" id="slidiness" min="0.9" max="1" value="0.98" step="0.01">
-    <p id="slidinessValue">0.98</p>
+    <div id="headerLine">
+        <button id="options" onclick="CloseSlider()" title="open setting"></button>
+        <button id="info" onclick="ShowInfo()" title="game rules"></button>
+        <button id="restart" onclick="Restart()" title="restart game"></button>
+        <p id="rulez">játékszabály: lorem ipsum lorem ipsum lorem ipsum</p>
+    </div>
+    <div id="sliderBox">
+        <p>1/friction:</p>
+        <input type="range" id="slidiness" min="0.9" max="1" value="0.98" step="0.01">
+        <p id="slidinessValue">0.98</p>
 
-    <p>wall bounciness:</p>
-    <input type="range" id="wallBounciness" min="0.2" max="10" value="0.5" step="0.01">
-    <p id="wallBouncinessValue">0.5</p>
+        <p>wall bounciness:</p>
+        <input type="range" id="wallBounciness" min="0.2" max="10" value="0.5" step="0.01">
+        <p id="wallBouncinessValue">0.5</p>
 
-    <p>acceleration:</p>
-    <input type="range" id="acceleration" min="0.1" max="5" value="0.7" step="0.01">
-    <p id="accelerationValue">0.7</p>
+        <p>acceleration:</p>
+        <input type="range" id="acceleration" min="0.1" max="5" value="0.7" step="0.01">
+        <p id="accelerationValue">0.7</p>
 
-    <p>ball mass:</p>
-    <input type="range" id="ballMass" min="0.1" max="1" value="0.5" step="0.01">
-    <p id="ballMassValue">0.5</p>
+        <p>ball mass:</p>
+        <input type="range" id="ballMass" min="0.1" max="0.5" value="0.3" step="0.01">
+        <p id="ballMassValue">0.3</p>
 
-    <p>ball size:</p>
-    <input type="range" id="ballSize" min="20" max="50" value="35" step="1">
-    <p id="ballSizeValue">35</p>
+        <p>ball size:</p>
+        <input type="range" id="ballSize" min="20" max="50" value="35" step="1">
+        <p id="ballSizeValue">35</p>
 
-    <p>boost Value [multiplier]:</p>
-    <input type="range" id="boostValue" min="0.5" max="5" value="2" step="0.1">
-    <p id="boostValueValue">2</p>
+        <p>boost Value [multiplier]:</p>
+        <input type="range" id="boostValue" min="0.5" max="5" value="2" step="0.1">
+        <p id="boostValueValue">2</p>
 
-    <p>dash cooldown [milliseconds]:</p>
-    <input type="range" id="coolDown" min="500" max="10000" value="500" step="10">
-    <p id="coolDownValue">500</p>
+        <p>dash cooldown[ms]:</p>
+        <input type="range" id="coolDown" min="1000" max="10000" value="500" step="10">
+        <p id="coolDownValue">500</p>
 
-    <button id="resetButton" onclick="ResetAdjustables()">Reset</button>
+        <button id="resetButton" onclick="ResetAdjustables()">Reset</button>
+    </div>
 
     <svg id="table" width="1290" height="600">
         <rect id="board" width="1200" height="600" x="45" stroke="black" stroke-width="5" fill="white"></rect>
@@ -59,7 +52,7 @@
         <rect id="goal2" width="45" height="150" x="1245" y="225" stroke="black" stroke-width="5" fill="white"></rect>
         <rect id="middleline" width="10" height="590" x="645" y="5" fill="red" outline="none"></rect>
 
-        <circle id="player1" cx="1000" cy="300" r="20" stroke="black" stroke-width="3" fill="green"/>
+        <circle id="player1" cx="245" cy="300" r="20" stroke="black" stroke-width="3" fill="green"/>
         <circle id="player2" cx="1045" cy="300" r="20" stroke="black" stroke-width="3" fill="blue"/>
         <circle id="ball" cx="650" cy="300" r="35" stroke="black" stroke-width="3" fill="black"/>
 
@@ -91,6 +84,10 @@
         </marker>
     </defs>
     </svg>
+    <div id="points">
+        <p id="player1Points">1</p>
+        <p id="player2Points">2</p>
+    </div>
 </body>
 <script src="logic.js"></script>
 </html>

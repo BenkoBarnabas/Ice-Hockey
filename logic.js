@@ -63,8 +63,6 @@ document.onkeyup = function(key){  //key = object with lots of info key.key is t
     }
 }
 
-
-//PARAMS
 let player1 = document.getElementById("player1")
 let player2 = document.getElementById("player2")
 let board = document.getElementById("board")
@@ -72,29 +70,7 @@ let arrow1 = document.getElementById("arrow1")
 let arrow2 = document.getElementById("arrow2")
 let ball = document.getElementById("ball")
 
-//sliderObjecs
-let slidinessSlider = document.getElementById("slidiness")
-let wallBouncinessSlider = document.getElementById("wallBounciness")
-let accelerationSlider = document.getElementById("acceleration")
-let boostValueSlider = document.getElementById("boostValue")
-let coolDownSlider = document.getElementById("coolDown")
-let ballMassSlider = document.getElementById("ballMass")
-let ballSizeSlider = document.getElementById("ballSize")
-
-let adjustableSliders = [wallBouncinessSlider,slidinessSlider,accelerationSlider,boostValueSlider,coolDownSlider,ballMassSlider,ballSizeSlider]
-
-//sliderTexts
-let slidinessValue = document.getElementById("slidinessValue")
-let wallBouncinessValue = document.getElementById("wallBouncinessValue")
-let accelerationValue = document.getElementById("accelerationValue")
-let boostValueValue = document.getElementById("boostValueValue")
-let coolDownValue = document.getElementById("coolDownValue")
-let ballMassValue = document.getElementById("ballMassValue")
-let ballSizeValue = document.getElementById("ballSizeValue")
-
-let adjustableValues = [wallBouncinessValue,slidinessValue,accelerationValue,boostValueValue,coolDownValue,ballMassValue,ballSizeValue]
-
-
+//VECTORS
 let player1Vector = { // v = velocity 
     xv: 0,
     yv: 0,
@@ -136,6 +112,33 @@ let ballVector = {
 }
 
 
+//PARAMS
+
+//sliderObjecs
+let slidinessSlider = document.getElementById("slidiness")
+let wallBouncinessSlider = document.getElementById("wallBounciness")
+let accelerationSlider = document.getElementById("acceleration")
+let boostValueSlider = document.getElementById("boostValue")
+let coolDownSlider = document.getElementById("coolDown")
+let ballMassSlider = document.getElementById("ballMass")
+let ballSizeSlider = document.getElementById("ballSize")
+let slidersClosed = false //az elején bezárja
+let rulezClosed = true //az elején kinyitja
+
+let adjustableSliders = [wallBouncinessSlider,slidinessSlider,accelerationSlider,boostValueSlider,coolDownSlider,ballMassSlider,ballSizeSlider]
+
+//sliderTexts
+let slidinessValue = document.getElementById("slidinessValue")
+let wallBouncinessValue = document.getElementById("wallBouncinessValue")
+let accelerationValue = document.getElementById("accelerationValue")
+let boostValueValue = document.getElementById("boostValueValue")
+let coolDownValue = document.getElementById("coolDownValue")
+let ballMassValue = document.getElementById("ballMassValue")
+let ballSizeValue = document.getElementById("ballSizeValue")
+
+let adjustableValues = [wallBouncinessValue,slidinessValue,accelerationValue,boostValueValue,coolDownValue,ballMassValue,ballSizeValue]
+
+
 let lastDashedPlayer1 = Date.now()
 let lastDashedPlayer2 = Date.now()
 
@@ -144,8 +147,8 @@ let boostValue = 2
 let wallBounciness = 0.5
 let slidiness = 0.98
 let acceleration = 0.7
-let dashCooldown = 500 //launch előtt legyen több
-let ballMass = 0.5
+let dashCooldown = 1000 //launch előtt legyen több
+let ballMass = 0.3
 let ballSize = 35
 
 let adjustables = [wallBounciness,slidiness,acceleration,boostValue,dashCooldown,ballMass,ballSize]
@@ -157,6 +160,11 @@ const boardParameters = {
     height: Number(board.getAttribute("height")),
     width: Number(board.getAttribute("width"))
 }
+
+let player1Points = 0
+let player2Points = 0
+let player1PointText = document.getElementById("player1Points")
+let player2PointText = document.getElementById("player2Points")
 
 
 //MAIN
@@ -170,6 +178,11 @@ function update() {
     PlayerHandleMovements()
     DirectionArrowHandler()
     PlayerHandleBorders()
+
+    DetectGoals()
+
+    player1PointText.innerHTML = player1Points
+    player2PointText.innerHTML = player2Points
     //end
     requestAnimationFrame(update)
 }
@@ -323,7 +336,7 @@ function PlayerHandleCollisions() {
     }
 
     //BALL
-    if ((ballVector.x - ballVector.r) <= boardParameters.x ||(boardParameters.x + boardParameters.width) <= (ballVector.x + ballVector.r) ) {
+    if ((ballVector.x - ballVector.r) <= boardParameters.x ||(boardParameters.x + boardParameters.width) <= (ballVector.x + ballVector.r)) {
         ballVector.xv *= -1
         ballVector.xv += Math.sign(ballVector.xv)*wallBounciness
 
@@ -425,25 +438,21 @@ function PlayerHandleBorders() {
 function BallCollisions() { //csak 8 irány --> szar, also sucks ball in so thats shit too --> https://youtu.be/guWIF87CmBg
     if((ballVector.x-player1Vector.x)**2+(ballVector.y-player1Vector.y)**2 <= (player1Vector.r+ballVector.r)**2)
     {
-        //player1
-        //player1Vector.xv -= (1-ballMass)/(1+ballMass)*player1Vector.xv + (2*ballMass)/(1+ballMass)*ballVector.xv
-        //player1Vector.yv -= (1-ballMass)/(1+ballMass)*player1Vector.yv + (2*ballMass)/(1+ballMass)*ballVector.yv
-        //ball
-        //ballVector.xv += (2*1)/(1+ballMass)*player1Vector.xv-(1-ballMass)/(1+ballMass)*ballVector.xv
-        //ballVector.yv += (2*1)/(1+ballMass)*player1Vector.yv-(1-ballMass)/(1+ballMass)*ballVector.yv
+        player1Vector.xv = ((1-ballMass)*player1Vector.xv +2*ballMass*ballVector.xv)/(1+ballMass)
+        player1Vector.yv = ((1-ballMass)*player1Vector.yv +2*ballMass*ballVector.yv)/(1+ballMass)
 
-        //console.log("ball érintkezés");
+        ballVector.xv = ((ballMass-1)*ballVector.xv + 2*1*player1Vector.xv)/(1+ballMass)
+        ballVector.yv = ((ballMass-1)*ballVector.yv + 2*1*player1Vector.yv)/(1+ballMass)
+        console.log("ball érintkezés");
     }
     if((ballVector.x-player2Vector.x)**2+(ballVector.y-player2Vector.y)**2 <= (player2Vector.r+ballVector.r)**2)
     {
-        //player1
-        //player2Vector.xv -= (1-ballMass)/(1+ballMass)*player2Vector.xv + (2*ballMass)/(1+ballMass)*ballVector.xv
-        //player2Vector.yv -= (1-ballMass)/(1+ballMass)*player2Vector.yv + (2*ballMass)/(1+ballMass)*ballVector.yv
-        //ball
-        //ballVector.xv += (2*1)/(1+ballMass)*player2Vector.xv-(1-ballMass)/(1+ballMass)*ballVector.xv
-        //ballVector.yv += (2*1)/(1+ballMass)*player2Vector.yv-(1-ballMass)/(1+ballMass)*ballVector.yv
+        player2Vector.xv = ((1-ballMass)*player2Vector.xv +2*ballMass*ballVector.xv)/(1+ballMass)
+        player2Vector.yv = ((1-ballMass)*player2Vector.yv +2*ballMass*ballVector.yv)/(1+ballMass)
 
-        //console.log("ball érintkezés");
+        ballVector.xv = ((ballMass-1)*ballVector.xv + 2*1*player2Vector.xv)/(1+ballMass)
+        ballVector.yv = ((ballMass-1)*ballVector.yv + 2*1*player2Vector.yv)/(1+ballMass)
+        console.log("ball érintkezés");
     }
 }
 
@@ -472,6 +481,18 @@ function DirectionArrowHandler() {
     }
 }
 
+function DetectGoals() {
+    if(ballVector.y - ballVector.r > 225 && ballVector.y + ballVector.r < 375 && ballVector.x - ballVector.r -3 < 45)
+    {
+        Reset()
+        player2Points += 1
+    }
+    if(ballVector.y - ballVector.r > 225 && ballVector.y + ballVector.r < 375 && ballVector.x + ballVector.r +3 > 1245)
+    {
+        Reset()
+        player1Points += 1
+    }
+}
 //SLIDERS
 
 document.addEventListener("input", function(event) {
@@ -503,8 +524,8 @@ function ResetAdjustables(){
     let wallBounciness = 0.5
     let slidiness = 0.98
     let acceleration = 0.7
-    let dashCooldown = 500 //launch előtt legyen több
-    let ballMass = 0.5
+    let dashCooldown = 1000 //launch előtt legyen több
+    let ballMass = 0.3
     let ballSize = 35
 
     adjustables[0] = wallBounciness
@@ -521,10 +542,73 @@ function ResetAdjustables(){
     }
 }
 
+function CloseSlider(){
+    if (slidersClosed)
+    {
+        document.getElementById("sliderBox").style.display = "block"
+        slidersClosed = false
+    }
+    else {
+        document.getElementById("sliderBox").style.display = "none"
+        slidersClosed = true
+    }
+}
+function ShowInfo(){
+    if (rulezClosed)
+    {
+        document.getElementById("rulez").style.display = "block"
+        rulezClosed = false
+    }
+    else {
+        document.getElementById("rulez").style.display = "none"
+        rulezClosed = true
+    }
+}
+
+function Restart(){
+    ResetAdjustables()
+    player1.setAttribute("cx",245)
+    player1.setAttribute("cy",300)
+    player2.setAttribute("cx",1045)
+    player2.setAttribute("cy",300)
+    ball.setAttribute("cx",650)
+    ball.setAttribute("cy",300)
+
+    player1Vector.xv = 0
+    player1Vector.yv = 0
+    player2Vector.xv = 0
+    player2Vector.yv = 0
+    ballVector.xv = 0
+    ballVector.yv = 0
+
+    document.getElementById("arrow1").style.display = "none"
+    document.getElementById("arrow2").style.display = "none"
+
+    player1Points = 0
+    player2Points = 0
+}
+
+function Reset(){
+    ResetAdjustables()
+    player1.setAttribute("cx",245)
+    player1.setAttribute("cy",300)
+    player2.setAttribute("cx",1045)
+    player2.setAttribute("cy",300)
+    ball.setAttribute("cx",650)
+    ball.setAttribute("cy",300)
+
+    player1Vector.xv = 0
+    player1Vector.yv = 0
+    player2Vector.xv = 0
+    player2Vector.yv = 0
+    ballVector.xv = 0
+    ballVector.yv = 0
+
+    document.getElementById("arrow1").style.display = "none"
+    document.getElementById("arrow2").style.display = "none"
+}
 
 //MAIN
 update()
-DirectionArrowHandler()
-PlayerHandleMovements()
-
-console.log(boardParameters);
+CloseSlider()
+ShowInfo()
