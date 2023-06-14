@@ -14,19 +14,9 @@
             -ms-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
         }
-        rect{
-            fill:white;
-            outline: 5px solid black;
-            outline-offset: -5px;
-        }
-        #middleline{
-            fill:red;
-            outline: none
-        }
         body{
             background-color:aquamarine;
         }
-
         line {
             display: none;
         }
@@ -34,7 +24,7 @@
 </head>
 <body>
     <p>1/friction:</p>
-    <input type="range" id="slidiness" min="0.7" max="1" value="0.98" step="0.01">
+    <input type="range" id="slidiness" min="0.9" max="1" value="0.98" step="0.01">
     <p id="slidinessValue">0.98</p>
 
     <p>wall bounciness:</p>
@@ -49,6 +39,10 @@
     <input type="range" id="ballMass" min="0.1" max="1" value="0.5" step="0.01">
     <p id="ballMassValue">0.5</p>
 
+    <p>ball size:</p>
+    <input type="range" id="ballSize" min="20" max="50" value="35" step="1">
+    <p id="ballSizeValue">35</p>
+
     <p>boost Value [multiplier]:</p>
     <input type="range" id="boostValue" min="0.5" max="5" value="2" step="0.1">
     <p id="boostValueValue">2</p>
@@ -60,14 +54,14 @@
     <button id="resetButton" onclick="ResetAdjustables()">Reset</button>
 
     <svg id="table" width="1290" height="600">
-        <rect id="board" width="1200" height="600" x="45"></rect>
-        <rect id="goal1" width="50" height="150" y="225"></rect>
-        <rect id="goal2" width="50" height="150" x="1240" y="225"></rect>
-        <rect id="middleline" width="10" height="590" x="645" y="5"></rect>
+        <rect id="board" width="1200" height="600" x="45" stroke="black" stroke-width="5" fill="white"></rect>
+        <rect id="goal1" width="45" height="150" y="225" stroke="black" stroke-width="5" fill="white"></rect>
+        <rect id="goal2" width="45" height="150" x="1245" y="225" stroke="black" stroke-width="5" fill="white"></rect>
+        <rect id="middleline" width="10" height="590" x="645" y="5" fill="red" outline="none"></rect>
 
-        <circle id="player1" cx="1000" cy="300" r="20" stroke="black" stroke-width="3" fill="green" />
-        <circle id="player2" cx="1045" cy="300" r="20" stroke="black" stroke-width="3" fill="blue" />
-        <circle id="ball" cx="650" cy="300" r="21" stroke="black" stroke-width="3" fill="black" />
+        <circle id="player1" cx="1000" cy="300" r="20" stroke="black" stroke-width="3" fill="green"/>
+        <circle id="player2" cx="1045" cy="300" r="20" stroke="black" stroke-width="3" fill="blue"/>
+        <circle id="ball" cx="650" cy="300" r="35" stroke="black" stroke-width="3" fill="black"/>
 
         <line id="arrow1" x1="0" y1="0" x2="0" y2="0" stroke-width="7" marker-end='url(#head)'/>
         <line id="arrow2" x1="0" y1="0" x2="0" y2="0" stroke-width="7" marker-end='url(#head2)'/>
