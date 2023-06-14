@@ -45,6 +45,10 @@
     <input type="range" id="acceleration" min="0.1" max="5" value="0.7" step="0.01">
     <p id="accelerationValue">0.7</p>
 
+    <p>ball mass:</p>
+    <input type="range" id="ballMass" min="0.1" max="1" value="0.5" step="0.01">
+    <p id="ballMassValue">0.5</p>
+
     <p>boost Value [multiplier]:</p>
     <input type="range" id="boostValue" min="0.5" max="5" value="2" step="0.1">
     <p id="boostValueValue">2</p>
@@ -61,9 +65,9 @@
         <rect id="goal2" width="50" height="150" x="1240" y="225"></rect>
         <rect id="middleline" width="10" height="590" x="645" y="5"></rect>
 
-        <circle id="player1" cx="245" cy="300" r="20" stroke="black" stroke-width="3" fill="green" />
+        <circle id="player1" cx="1000" cy="300" r="20" stroke="black" stroke-width="3" fill="green" />
         <circle id="player2" cx="1045" cy="300" r="20" stroke="black" stroke-width="3" fill="blue" />
-        <circle id="ball" cx="650" cy="300" r="50" stroke="black" stroke-width="3" fill="black" />
+        <circle id="ball" cx="650" cy="300" r="21" stroke="black" stroke-width="3" fill="black" />
 
         <line id="arrow1" x1="0" y1="0" x2="0" y2="0" stroke-width="7" marker-end='url(#head)'/>
         <line id="arrow2" x1="0" y1="0" x2="0" y2="0" stroke-width="7" marker-end='url(#head2)'/>

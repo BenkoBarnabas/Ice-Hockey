@@ -72,16 +72,15 @@ let arrow1 = document.getElementById("arrow1")
 let arrow2 = document.getElementById("arrow2")
 let ball = document.getElementById("ball")
 
-let ballMass = 2
-
 //sliderObjecs
 let slidinessSlider = document.getElementById("slidiness")
 let wallBouncinessSlider = document.getElementById("wallBounciness")
 let accelerationSlider = document.getElementById("acceleration")
 let boostValueSlider = document.getElementById("boostValue")
 let coolDownSlider = document.getElementById("coolDown")
+let ballMassSlider = document.getElementById("ballMass")
 
-let adjustableSliders = [wallBouncinessSlider,slidinessSlider,accelerationSlider,boostValueSlider,coolDownSlider]
+let adjustableSliders = [wallBouncinessSlider,slidinessSlider,accelerationSlider,boostValueSlider,coolDownSlider,ballMassSlider]
 
 //sliderTexts
 let slidinessValue = document.getElementById("slidinessValue")
@@ -89,8 +88,9 @@ let wallBouncinessValue = document.getElementById("wallBouncinessValue")
 let accelerationValue = document.getElementById("accelerationValue")
 let boostValueValue = document.getElementById("boostValueValue")
 let coolDownValue = document.getElementById("coolDownValue")
+let ballMassValue = document.getElementById("ballMassValue")
 
-let adjustableValues = [wallBouncinessValue,slidinessValue,accelerationValue,boostValueValue,coolDownValue]
+let adjustableValues = [wallBouncinessValue,slidinessValue,accelerationValue,boostValueValue,coolDownValue,ballMassValue]
 
 
 let player1Vector = { // v = velocity 
@@ -143,8 +143,9 @@ let wallBounciness = 0.5
 let slidiness = 0.98
 let acceleration = 0.7
 let dashCooldown = 500 //launch előtt legyen több
+let ballMass = 0.5
 
-let adjustables = [wallBounciness,slidiness,acceleration,boostValue,dashCooldown]
+let adjustables = [wallBounciness,slidiness,acceleration,boostValue,dashCooldown,ballMass]
 console.log(adjustables);
 
 const boardParameters = {
@@ -158,14 +159,14 @@ const boardParameters = {
 //MAIN
 function update() {
     //logic
-    PlayerInputHandler()
     UpdateAdjustables()
+    PlayerInputHandler()
+    BallCollisions()
     Firction()
     PlayerHandleCollisions()
     PlayerHandleMovements()
     DirectionArrowHandler()
     PlayerHandleBorders()
-    BallCollisions()
     //end
     requestAnimationFrame(update)
 }
@@ -347,6 +348,22 @@ function PlayerHandleBorders() {
     else if ((boardParameters.y + boardParameters.height) <= (player1Vector.y + player1Vector.r)) {
         player1.setAttribute("cy", boardParameters.y + boardParameters.height-player1Vector.r)
     }
+    //with ball
+    if ((ballVector.x-player1Vector.x)**2+(ballVector.y-player1Vector.y)**2 <= (player1Vector.r+ballVector.r)**2) {
+        if(player1Vector.x < ballVector.x) { //megnézi hogy jobbról vagy balról közelít e
+            player1.setAttribute("cx",player1Vector.x-player1Vector.xv-3) //3- kell egy kicsi pontatlanság vagy bugos lesz az rósz
+        }
+        if(player1Vector.x > ballVector.x) {
+            player1.setAttribute("cx",player1Vector.x-player1Vector.xv+3)
+        }
+        //y
+        if(player1Vector.y < ballVector.y) {
+            player1.setAttribute("cy",player1Vector.y-player1Vector.yv-3)
+        }
+        if(player1Vector.y > ballVector.y) {
+            player1.setAttribute("cy",player1Vector.y-player1Vector.yv+3)
+        }
+    } 
 
     //PLAYER2
     if ((player2Vector.x - player2Vector.r) <= boardParameters.x){
@@ -393,6 +410,20 @@ function PlayerHandleBorders() {
     }
 }
 
+function BallCollisions() { //csevegőbot ellopta a fizikusok munkályát
+    if((ballVector.x-player1Vector.x)**2+(ballVector.y-player1Vector.y)**2 <= (player1Vector.r+ballVector.r)**2)
+    {
+        //player1
+        player1Vector.xv -= (1-ballMass)/(1+ballMass)*player1Vector.xv + (2*ballMass)/(1+ballMass)*ballVector.xv
+        player1Vector.yv -= (1-ballMass)/(1+ballMass)*player1Vector.yv + (2*ballMass)/(1+ballMass)*ballVector.yv
+        //ball
+        ballVector.xv += (2*1)/(1+ballMass)*player1Vector.xv-(1-ballMass)/(1+ballMass)*ballVector.xv
+        ballVector.yv += (2*1)/(1+ballMass)*player1Vector.yv-(1-ballMass)/(1+ballMass)*ballVector.yv
+
+        console.log("ball érintkezés");
+    }
+}
+
 function DirectionArrowHandler() {
     arrow1.setAttribute("x1",Number(player1.getAttribute("cx")))
     arrow1.setAttribute("y1",Number(player1.getAttribute("cy")))
@@ -418,25 +449,16 @@ function DirectionArrowHandler() {
     }
 }
 
-function BallCollisions() {
-    if((ballVector.x-player1Vector.x)**2+(ballVector.y-player1Vector.y)**2 <= (player1Vector.r+ballVector.r)**2)
-    {
-        ballVector.xv += player1Vector.xv/ballMass
-        console.log("ball érintkezés");
-    }
-}
-
 //SLIDERS
 
 document.addEventListener("input", function(event) {
     // Check if the event target is the slider
-    for (let i = 0; i < 5; i++)
+    for (let i = 0; i < 6; i++)
     {
         if (event.target === adjustableSliders[i]) {
             var value = adjustableSliders[i].value; //the indexes of adjustable/value/sliders are the same and we can use an array to make the code simpler
             adjustableValues[i].innerHTML = value
             adjustables[i] = Number(value)
-
         }
     }
   })
@@ -447,6 +469,7 @@ function UpdateAdjustables() {
     acceleration = adjustables[2]
     boostValue = adjustables[3]
     dashCooldown = adjustables[4]
+    ballMass = adjustables[5]
 }
 
 function ResetAdjustables(){
@@ -455,14 +478,16 @@ function ResetAdjustables(){
     let slidiness = 0.98
     let acceleration = 0.7
     let dashCooldown = 500 //launch előtt legyen több
+    let ballMass = 0.5
 
     adjustables[0] = wallBounciness
     adjustables[1] = slidiness
     adjustables[2] = acceleration
     adjustables[3] = boostValue
     adjustables[4] = dashCooldown
+    adjustables[5] = ballMass
 
-    for(let i = 0; i<5; i++){
+    for(let i = 0; i<6; i++){
         adjustableValues[i].innerHTML = adjustables[i]
         adjustableSliders[i].value = adjustables[i]
     }
