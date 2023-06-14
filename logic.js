@@ -130,7 +130,7 @@ let lastDashedPlayer2 = Date.now()
 let boostValue = 2
 let wallBounciness = 0.5
 let slidiness = 0.98
-let acceleration = 5
+let acceleration = 0.7
 let dashCooldown = 500 //launch előtt legyen több
 
 let adjustables = [wallBounciness,slidiness,acceleration,boostValue,dashCooldown]
@@ -185,7 +185,7 @@ function update() {
     PlayerHandleCollisions()
     PlayerHandleMovements()
     DirectionArrowHandler()
-    console.log(acceleration);
+    PlayerHandleBorders()
     //end
     requestAnimationFrame(update)
 }
@@ -259,26 +259,58 @@ function PlayerHandleCollisions() {
     if ((player1Vector.x - player1Vector.r) <= boardParameters.x ||(boardParameters.x + boardParameters.width) <= (player1Vector.x + player1Vector.r) ) {
         player1Vector.xv *= -1
         player1Vector.xv += Math.sign(player1Vector.xv)*wallBounciness
-
-        player1Vector.x += boardParameters.x
         
         console.log("if be vagyok én most")
     }
     if ((player1Vector.y - player1Vector.r) <= boardParameters.y ||(boardParameters.y + boardParameters.height) <= (player1Vector.y + player1Vector.r) ) {
         player1Vector.yv *= -1
         player1Vector.yv += Math.sign(player1Vector.yv)*wallBounciness
+
         console.log("if be vagyok én most");
     }
 
     if ((player2Vector.x - player2Vector.r) <= boardParameters.x ||(boardParameters.x + boardParameters.width) <= (player2Vector.x + player2Vector.r) ) {
         player2Vector.xv *= -1
         player2Vector.xv += Math.sign(player2Vector.xv)*wallBounciness
+
         console.log("if be vagyok én most")
     }
     if ((player2Vector.y - player2Vector.r) <= boardParameters.y ||(boardParameters.y + boardParameters.height) <= (player2Vector.y + player2Vector.r) ) {
         player2Vector.yv *= -1
         player2Vector.yv += Math.sign(player2Vector.yv)*wallBounciness
+
         console.log("if be vagyok én most");
+    }
+}
+
+function PlayerHandleBorders() {
+    if ((player1Vector.x - player1Vector.r) <= boardParameters.x){
+        player1.setAttribute("cx", boardParameters.x+player1Vector.r)
+    }
+    else if((boardParameters.x + boardParameters.width) <= (player1Vector.x + player1Vector.r)) {
+        player1.setAttribute("cx", boardParameters.x-player1Vector.r+boardParameters.width) 
+    }
+
+    if ((player1Vector.y - player1Vector.r) <= boardParameters.y){
+        player1.setAttribute("cy", boardParameters.y+player1Vector.r)
+    }
+    else if ((boardParameters.y + boardParameters.height) <= (player1Vector.y + player1Vector.r)) {
+        player1.setAttribute("cy", boardParameters.y + boardParameters.height-player1Vector.r)
+    }
+
+    //PLAYER2
+    if ((player2Vector.x - player2Vector.r) <= boardParameters.x){
+        player2.setAttribute("cx", boardParameters.x+player2Vector.r)
+    }
+    else if((boardParameters.x + boardParameters.width) <= (player2Vector.x + player2Vector.r)) {
+        player2.setAttribute("cx", boardParameters.x-player2Vector.r+boardParameters.width) 
+    }
+    
+    if ((player1Vector.y - player2Vector.r) <= boardParameters.y){
+        player2.setAttribute("cy", boardParameters.y+player2Vector.r)
+    }
+    else if ((boardParameters.y + boardParameters.height) <= (player2Vector.y + player2Vector.r)) {
+        player2.setAttribute("cy", boardParameters.y + boardParameters.height-player2Vector.r)
     }
 }
 
@@ -294,6 +326,17 @@ function DirectionArrowHandler() {
 
     arrow2.setAttribute("x2",((Number(arrow2.getAttribute("x1"))+Math.sign(player2Vector.xv)*12*(Math.sqrt(Math.abs(player2Vector.xv))))))
     arrow2.setAttribute("y2",((Number(arrow2.getAttribute("y1"))+Math.sign(player2Vector.yv)*12*(Math.sqrt(Math.abs(player2Vector.yv))))))
+
+    //arrow visibility 
+    //arrow visibility 
+    if((Math.abs(player1Vector.xv) || Math.abs(player1Vector.yv)) > 0)
+    {
+        document.getElementById("arrow1").style.display = "block"
+    }
+    if((Math.abs(player2Vector.xv) || Math.abs(player2Vector.yv)) > 0)
+    {
+        document.getElementById("arrow2").style.display = "block"
+    }
 }
 
 //SLIDERS
@@ -305,11 +348,9 @@ document.addEventListener("input", function(event) {
         if (event.target === adjustableSliders[i]) {
             var value = adjustableSliders[i].value; //the indexes of adjustable/value/sliders are the same and we can use an array to make the code simpler
             adjustableValues[i].innerHTML = value
-            adjustables[i] = value
-            console.log(wallBounciness);
+            adjustables[i] = Number(value)
 
         }
-        
     }
   })
 
@@ -337,7 +378,6 @@ function ResetAdjustables(){
     for(let i = 0; i<5; i++){
         adjustableValues[i].innerHTML = adjustables[i]
         adjustableSliders[i].value = adjustables[i]
-        console.log("kaki");
     }
 }
 
